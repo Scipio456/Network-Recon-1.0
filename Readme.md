@@ -1,6 +1,6 @@
 Simple Port Scanner
 
-A Python-based port scanner that identifies open TCP and UDP ports on target hosts, mimicking advanced functionality of tools like Nmap. Developed as part of MCA cybersecurity coursework to explore network reconnaissance techniques, this tool is designed for educational purposes and demonstrates socket programming, multi-threading, and vulnerability assessment basics.
+A Python-based port scanner designed for educational purposes to demonstrate basic network reconnaissance techniques. This tool identifies open TCP ports on a target host, showcasing socket programming and multi-threading concepts.
 
 Features
 
@@ -8,19 +8,11 @@ Features
 
 
 
-Scans a user-specified range of ports (default: 1–1024) on a single IP or multiple IP addresses.
+Scans a user-specified range of TCP ports (default: 1–1024) on a single IP address.
 
 
 
-Supports both TCP and UDP scanning (--udp flag).
-
-
-
-Reports open ports, their associated services (e.g., port 80 for HTTP, 50000 for Custom Chat App), and service banners for TCP ports (e.g., "Apache/2.4.41").
-
-
-
-Saves scan results to JSON or CSV files (--output json|csv, excluded from repository).
+Reports open ports and their associated services (e.g., port 80 for HTTP, 50000 for Custom Chat App).
 
 
 
@@ -44,15 +36,11 @@ Python 3.x installed (check with python3 --version).
 
 
 
-Permission to scan the target host(s) (e.g., your own system, such as 127.0.0.1, or authorized network devices).
+Permission to scan the target host (e.g., your own system, such as 127.0.0.1, or authorized devices).
 
 
 
-Firewall configured to allow outgoing TCP/UDP connections on the scanning device and incoming connections on the target.
-
-
-
-Administrative privileges (e.g., sudo) may be required for UDP scanning or low-numbered ports.
+Firewall configured to allow outgoing TCP connections on the scanning device and incoming TCP connections on the target.
 
 Setup
 
@@ -63,11 +51,11 @@ Setup
 Clone the repository from GitHub:
 
 git clone <your-repo-url>
-cd MCA-Port-Scanner
+cd simple-port-scanner
 
 
 
-Ensure port_scanner.py, .gitignore, README.md, and LICENSE are present:
+Ensure port_scanner.py, .gitignore, and README.md are present:
 
 ls
 
@@ -81,7 +69,7 @@ Usage
 
 Run the scanner from the command line with the following syntax:
 
-python3 port_scanner.py <target_ip_or_range> [start_port] [end_port] [--udp] [--output json|csv]
+python3 port_scanner.py <target_ip> [start_port] [end_port]
 
 Examples
 
@@ -95,20 +83,14 @@ python3 port_scanner.py 127.0.0.1
 
 Output:
 
-Scanning 127.0.0.1 from port 1 to 1024 (TCP)...
-Port 80 is OPEN (HTTP) - Banner: Apache/2.4.41
+Scanning 127.0.0.1 from port 1 to 1024...
+Port 80 is OPEN (HTTP)
 Port 443 is OPEN (HTTPS)
 
 Open ports found:
-Port 80: HTTP (TCP) - Banner: Apache/2.4.41
-Port 443: HTTPS (TCP) - Banner: No banner
+Port 80: HTTP
+Port 443: HTTPS
 Scan completed in 5.23 seconds
-
-
-
-UDP Scan on Localhost (requires sudo):
-
-sudo python3 port_scanner.py 127.0.0.1 --udp
 
 
 
@@ -118,39 +100,17 @@ python3 port_scanner.py 127.0.0.1 1 100
 
 
 
-Scan a Local Network (replace <your_network> with your authorized IP range, e.g., a lab network):
+Scan a Custom Server (e.g., a server running on port 50000):
 
-python3 port_scanner.py <your_network> 1 100
-
-
-
-Scan Chat App Server (e.g., your Windows machine running server.py on port 50000):
-
-python3 port_scanner.py <your_windows_ip> 50000 50000
+python3 port_scanner.py <your_server_ip> 50000 50000
 
 Output:
 
-Scanning <your_windows_ip> from port 50000 to 50000 (TCP)...
+Scanning <your_server_ip> from port 50000 to 50000...
 Port 50000 is OPEN (Custom Chat App)
 Open ports found:
-Port 50000: Custom Chat App (TCP) - Banner: No banner
+Port 50000: Custom Chat App
 Scan completed in 0.12 seconds
-
-
-
-Save Results to JSON:
-
-python3 port_scanner.py 127.0.0.1 --output json
-
-Creates scan_results_127_0_0_1.json (not uploaded to GitHub).
-
-
-
-Save Results to CSV:
-
-python3 port_scanner.py <your_windows_ip> --output csv
-
-Creates scan_results_<ip>.csv (not uploaded).
 
 Output Files
 
@@ -162,27 +122,15 @@ Log File: Scan details are logged to port_scan.log (excluded from repository).
 
 
 
-JSON/CSV Files: Results are saved to scan_results_<ip>.json or scan_results_<ip>.csv if --output is used (excluded via .gitignore).
 
 
+Example log entry:
 
-
-
-JSON example:
-
-[{"port": 80, "service": "HTTP", "banner": "Apache/2.4.41"}, {"port": 443, "service": "HTTPS", "banner": "No banner"}]
-
-
-
-CSV example:
-
-Port,Service,Protocol,Banner
-80,HTTP,TCP,Apache/2.4.41
-443,HTTPS,TCP,No banner
+2025-08-31 17:14:23 - Port 80 is OPEN (HTTP)
 
 Security Note
 
-This tool is for educational purposes only. Scanning ports on systems or networks without explicit permission is illegal and unethical. Use only on systems you own (e.g., 127.0.0.1, your own devices) or have written authorization to scan (e.g., a virtual machine in a lab environment). Replace <your_network> or <your_windows_ip> with your own authorized IP addresses.
+This tool is for educational purposes only. Scanning ports on systems or networks without explicit permission is illegal and unethical. Use only on systems you own (e.g., 127.0.0.1, your own devices) or have written authorization to scan (e.g., a virtual machine in a lab environment). Replace <your_server_ip> with your own authorized IP address.
 
 Troubleshooting
 
@@ -190,7 +138,7 @@ Troubleshooting
 
 
 
-Invalid IP Address: Ensure the IP is a valid IPv4 address or range (e.g., a private network range).
+Invalid IP Address: Ensure the IP is a valid IPv4 address.
 
 
 
@@ -206,9 +154,9 @@ No Open Ports: Start a known service (e.g., python3 -m http.server 80) or verify
 
 
 
-Windows firewall example:
+Example for allowing ports (Windows):
 
-netsh advfirewall firewall add rule name="Port Scanner" dir=in action=allow protocol=TCP,UDP localport=1-1024
+netsh advfirewall firewall add rule name="Port Scanner" dir=in action=allow protocol=TCP localport=1-1024
 
 
 
@@ -216,41 +164,31 @@ Connection Errors: Ensure the target is reachable and not blocking connections.
 
 
 
-Permission Denied: Use sudo for UDP scanning or low-numbered ports:
-
-sudo python3 port_scanner.py 127.0.0.1 --udp
-
-
-
-UDP Scanning Unreliable: UDP ports may not respond consistently; test with known services (e.g., DNS on port 53).
-
-
-
 Slow Scans: Reduce the port range (e.g., 1 100) or increase threads in port_scanner.py (edit range(50)).
 
-Testing with Your Chat Application
+Testing with a Custom Application
 
-To test with your chat application server running on a Windows machine (e.g., <your_windows_ip>:50000):
-
-
+To test with a custom server (e.g., a chat application running on port 50000):
 
 
 
-Start the server on Windows:
+
+
+Start the server on your machine:
 
 python server.py 50000
 
 
 
-Allow port 50000 in Windows Firewall:
+Allow port 50000 in the firewall:
 
-netsh advfirewall firewall add rule name="Chat Server" dir=in action=allow protocol=TCP localport=50000
+netsh advfirewall firewall add rule name="Custom Server" dir=in action=allow protocol=TCP localport=50000
 
 
 
-Scan from your Mac:
+Scan from another device:
 
-python3 port_scanner.py <your_windows_ip> 50000 50000
+python3 port_scanner.py <your_server_ip> 50000 50000
 
 GitHub Repository
 
@@ -270,15 +208,11 @@ port_scanner.py
 
 README.md
 
-
-
-LICENSE
-
-Sensitive files (port_scan.log, *.json, *.csv) are excluded via .gitignore to ensure no scan results or IP addresses are uploaded.
+Sensitive files (e.g., port_scan.log) are excluded via .gitignore to ensure no scan results or IP addresses are uploaded.
 
 License
 
-MIT License (see LICENSE file).
+All rights reserved. This code is for educational viewing only and may not be copied, modified, or distributed without explicit permission from the author.
 
 Disclaimer
 
